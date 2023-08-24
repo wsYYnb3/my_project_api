@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "root",
+    "password": "asdf4321",
+    "database": "EcommerceDB",
+    "host": "127.0.0.1",
+    "port": 3308,
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "asdf4321",
+    "database": "EcommerceDB",
+    "host": "127.0.0.1",
+    "port": 3308,
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "asdf4321",
+    "database": "EcommerceDB",
+    "host": "127.0.0.1",
+    "port": 3308,
+    "dialect": "mysql"
+  }
+}

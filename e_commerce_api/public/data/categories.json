@@ -1,0 +1,82 @@
+[
+    {
+      "id": 1,
+      "parent_id": null,
+      "created_at": "2023-08-16T00:00:00Z",
+      "updated_at": "2023-08-16T00:00:00Z",
+      "deleted_at": null
+    },
+    {
+      "id": 2,
+      "name_key": "vegetables",
+      "parent_id": 1,
+      "created_at": "2023-08-16T01:00:00Z",
+      "updated_at": "2023-08-16T01:00:00Z",
+      "deleted_at": null
+    },
+    {
+      "id": 3,
+      "name_key": "fruits",
+      "parent_id": 1,
+      "created_at": "2023-08-16T01:10:00Z",
+      "updated_at": "2023-08-16T01:10:00Z",
+      "deleted_at": null
+    },
+    {
+      "id": 4,
+      "name_key": "dairy",
+      "parent_id": 1,
+      "created_at": "2023-08-16T01:20:00Z",
+      "updated_at": "2023-08-16T01:20:00Z",
+      "deleted_at": null
+    },
+    {
+      "id": 5,
+      "name_key": "grains_and_seeds",
+      "parent_id": 1,
+      "created_at": "2023-08-16T01:30:00Z",
+      "updated_at": "2023-08-16T01:30:00Z",
+      "deleted_at": null
+    },
+    {
+      "id": 6,
+      "name_key": "drinks",
+      "parent_id": 1,
+      "created_at": "2023-08-16T01:40:00Z",
+      "updated_at": "2023-08-16T01:40:00Z",
+      "deleted_at": null
+    },
+    {
+      "id": 7,
+      "name_key": "root_vegetables",
+      "parent_id": 2,
+      "created_at": "2023-08-16T02:00:00Z",
+      "updated_at": "2023-08-16T02:00:00Z",
+      "deleted_at": null
+    },
+    {
+      "id": 8,
+      "name_key": "leafy_greens",
+      "parent_id": 2,
+      "created_at": "2023-08-16T02:10:00Z",
+      "updated_at": "2023-08-16T02:10:00Z",
+      "deleted_at": null
+    },
+    {
+      "id": 9,
+      "name_key": "citrus",
+      "parent_id": 3,
+      "created_at": "2023-08-16T02:20:00Z",
+      "updated_at": "2023-08-16T02:20:00Z",
+      "deleted_at": null
+    },
+    {
+      "id": 10,
+      "name_key": "berries",
+      "parent_id": 3,
+      "created_at": "2023-08-16T02:30:00Z",
+      "updated_at": "2023-08-16T02:30:00Z",
+      "deleted_at": null
+    }
+  ]
+  
