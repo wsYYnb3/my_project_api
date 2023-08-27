@@ -34,6 +34,7 @@ const ProductController = {
           { model: models.productspecification, as: "productspecifications" },
           { model: models.vendor, as: "vendor" },
           { model: models.keyword, as: "keyword_id_keywords" },
+          { model: models.technicalinformation, as: "technicalinformations" },
         ],
       });
       console.log("Products found:", products);
@@ -67,6 +68,7 @@ const ProductController = {
           { model: models.productspecification, as: "productspecifications" },
           { model: models.vendor, as: "vendor" },
           { model: models.keyword, as: "keyword_id_keywords" },
+          { model: models.technicalinformation, as: "technicalinformations" },
         ],
       });
       if (product) {

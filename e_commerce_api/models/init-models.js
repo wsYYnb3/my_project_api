@@ -106,6 +106,8 @@ function initModels(sequelize) {
   product.hasMany(productpriceincurrency, { as: "productpriceincurrencies", foreignKey: "product_id"});
   productspecification.belongsTo(product, { as: "product", foreignKey: "product_id"});
   product.hasMany(productspecification, { as: "productspecifications", foreignKey: "product_id"});
+  technicalinformation.belongsTo(product, { as: "product", foreignKey: "product_id"});
+  product.hasMany(technicalinformation, { as: "technicalinformations", foreignKey: "product_id"});
   wishlistitem.belongsTo(product, { as: "product", foreignKey: "product_id"});
   product.hasMany(wishlistitem, { as: "wishlistitems", foreignKey: "product_id"});
   useractivity.belongsTo(session, { as: "session", foreignKey: "session_id"});
