@@ -35,6 +35,7 @@ const ProductController = {
           { model: models.vendor, as: "vendor" },
           { model: models.keyword, as: "keyword_id_keywords" },
           { model: models.technicalinformation, as: "technicalinformations" },
+          { model: models.category, as: "category" },
         ],
       });
       console.log("Products found:", products);
