@@ -7,6 +7,7 @@ const productsRouter = require("./routes/products");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const translationsRouter = require("./routes/translations");
+const categoriesRouter = require("./routes/categories");
 
 var app = express();
 
@@ -22,7 +23,9 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use("/products", productsRouter);
+app.use("/categories", categoriesRouter);
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/api", translationsRouter);
+
 module.exports = app;
