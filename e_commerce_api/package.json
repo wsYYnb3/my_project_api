@@ -6,7 +6,7 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
-    "@clerk/clerk-sdk-node": "^4.12.2",
+    "@clerk/clerk-sdk-node": "^4.12.3",
     "axios": "^1.4.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
@@ -20,7 +20,8 @@
     "nodemon": "^3.0.1",
     "sequelize": "^6.32.1",
     "sequelize-cli": "^6.6.1",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "svix": "^1.9.0"
   },
   "devDependencies": {
     "sequelize-auto": "^0.8.8"

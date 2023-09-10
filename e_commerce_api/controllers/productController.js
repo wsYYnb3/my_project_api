@@ -13,7 +13,7 @@ const ProductController = {
   // Get all products
   getAll: async (req, res) => {
     try {
-      console.log("Getting all products...");
+      // console.log("Getting all products...");
       const products = await models.product.findAll({
         include: [
           {
@@ -31,6 +31,26 @@ const ProductController = {
               },
             ],
           },
+          {
+            model: models.productcartimage,
+            as: "productcartimages",
+            include: [
+              {
+                model: models.image,
+                as: "image",
+              },
+            ],
+          },
+          {
+            model: models.productcardimage,
+            as: "productcardimages",
+            include: [
+              {
+                model: models.image,
+                as: "image",
+              },
+            ],
+          },
           { model: models.productspecification, as: "productspecifications" },
           { model: models.vendor, as: "vendor" },
           { model: models.keyword, as: "keyword_id_keywords" },
@@ -38,7 +58,7 @@ const ProductController = {
           { model: models.category, as: "category" },
         ],
       });
-      console.log("Products found:", products);
+      //console.log("Products found:", products);
       res.status(200).json(products);
     } catch (error) {
       console.error("Error in getAll:", error);
@@ -59,6 +79,26 @@ const ProductController = {
           {
             model: models.productimage,
             as: "productimages",
+            include: [
+              {
+                model: models.image,
+                as: "image",
+              },
+            ],
+          },
+          {
+            model: models.productcartimage,
+            as: "productcartimages",
+            include: [
+              {
+                model: models.image,
+                as: "image",
+              },
+            ],
+          },
+          {
+            model: models.productcardimage,
+            as: "productcardimages",
             include: [
               {
                 model: models.image,
