@@ -13,7 +13,7 @@ const CategoryController = {
   // Get all categories
   getAll: async (req, res) => {
     try {
-      console.log("Getting all categories...");
+      // console.log("Getting all categories...");
       const categories = await models.category.findAll({
         include: [
           /*  {
@@ -22,7 +22,7 @@ const CategoryController = {
           },*/
         ],
       });
-      console.log("Categories found:", categories);
+      //console.log("Categories found:", categories);
       res.status(200).json(categories);
     } catch (error) {
       console.error("Error in getAll:", error);

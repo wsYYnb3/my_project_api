@@ -8,10 +8,13 @@ var _customer = require("./customer");
 var _image = require("./image");
 var _keyword = require("./keyword");
 var _language = require("./language");
+var _orders = require("./orders");
 var _page = require("./page");
 var _pagecontent = require("./pagecontent");
 var _pageimage = require("./pageimage");
 var _product = require("./product");
+var _productcardimage = require("./productcardimage");
+var _productcartimage = require("./productcartimage");
 var _productimage = require("./productimage");
 var _productkeyword = require("./productkeyword");
 var _productpriceincurrency = require("./productpriceincurrency");
@@ -37,10 +40,13 @@ function initModels(sequelize) {
   var image = _image(sequelize, DataTypes);
   var keyword = _keyword(sequelize, DataTypes);
   var language = _language(sequelize, DataTypes);
+  var orders = _orders(sequelize, DataTypes);
   var page = _page(sequelize, DataTypes);
   var pagecontent = _pagecontent(sequelize, DataTypes);
   var pageimage = _pageimage(sequelize, DataTypes);
   var product = _product(sequelize, DataTypes);
+  var productcardimage = _productcardimage(sequelize, DataTypes);
+  var productcartimage = _productcartimage(sequelize, DataTypes);
   var productimage = _productimage(sequelize, DataTypes);
   var productkeyword = _productkeyword(sequelize, DataTypes);
   var productpriceincurrency = _productpriceincurrency(sequelize, DataTypes);
@@ -62,16 +68,20 @@ function initModels(sequelize) {
   address.hasMany(customer, { as: "customers", foreignKey: "shipping_address_id"});
   customer.belongsTo(address, { as: "billing_address", foreignKey: "billing_address_id"});
   address.hasMany(customer, { as: "billing_address_customers", foreignKey: "billing_address_id"});
+  orders.belongsTo(address, { as: "shipping_address", foreignKey: "shipping_address_id"});
+  address.hasMany(orders, { as: "orders", foreignKey: "shipping_address_id"});
   vendor.belongsTo(address, { as: "address", foreignKey: "address_id"});
   address.hasMany(vendor, { as: "vendors", foreignKey: "address_id"});
   product.belongsTo(category, { as: "category", foreignKey: "category_id"});
   category.hasMany(product, { as: "products", foreignKey: "category_id"});
-  customer.belongsTo(currency, { as: "currency", foreignKey: "currency_id"});
-  currency.hasMany(customer, { as: "customers", foreignKey: "currency_id"});
+  orders.belongsTo(currency, { as: "currency", foreignKey: "currency_id"});
+  currency.hasMany(orders, { as: "orders", foreignKey: "currency_id"});
   productpriceincurrency.belongsTo(currency, { as: "currency", foreignKey: "currency_id"});
   currency.hasMany(productpriceincurrency, { as: "productpriceincurrencies", foreignKey: "currency_id"});
   cartitem.belongsTo(customer, { as: "customer", foreignKey: "customer_id"});
   customer.hasMany(cartitem, { as: "cartitems", foreignKey: "customer_id"});
+  orders.belongsTo(customer, { as: "customer", foreignKey: "customer_id"});
+  customer.hasMany(orders, { as: "orders", foreignKey: "customer_id"});
   session.belongsTo(customer, { as: "customer", foreignKey: "customer_id"});
   customer.hasMany(session, { as: "sessions", foreignKey: "customer_id"});
   ticket.belongsTo(customer, { as: "customer", foreignKey: "customer_id"});
@@ -82,6 +92,10 @@ function initModels(sequelize) {
   customer.hasMany(wishlistitem, { as: "wishlistitems", foreignKey: "customer_id"});
   pageimage.belongsTo(image, { as: "image", foreignKey: "image_id"});
   image.hasMany(pageimage, { as: "pageimages", foreignKey: "image_id"});
+  productcardimage.belongsTo(image, { as: "image", foreignKey: "image_id"});
+  image.hasMany(productcardimage, { as: "productcardimages", foreignKey: "image_id"});
+  productcartimage.belongsTo(image, { as: "image", foreignKey: "image_id"});
+  image.hasMany(productcartimage, { as: "productcartimages", foreignKey: "image_id"});
   productimage.belongsTo(image, { as: "image", foreignKey: "image_id"});
   image.hasMany(productimage, { as: "productimages", foreignKey: "image_id"});
   product.belongsTo(keyword, { as: "keyword", foreignKey: "keyword_id"});
@@ -98,6 +112,10 @@ function initModels(sequelize) {
   page.hasMany(useractivity, { as: "useractivities", foreignKey: "page_id"});
   cartitem.belongsTo(product, { as: "product", foreignKey: "product_id"});
   product.hasMany(cartitem, { as: "cartitems", foreignKey: "product_id"});
+  productcardimage.belongsTo(product, { as: "product", foreignKey: "product_id"});
+  product.hasMany(productcardimage, { as: "productcardimages", foreignKey: "product_id"});
+  productcartimage.belongsTo(product, { as: "product", foreignKey: "product_id"});
+  product.hasMany(productcartimage, { as: "productcartimages", foreignKey: "product_id"});
   productimage.belongsTo(product, { as: "product", foreignKey: "product_id"});
   product.hasMany(productimage, { as: "productimages", foreignKey: "product_id"});
   productkeyword.belongsTo(product, { as: "product", foreignKey: "product_id"});
@@ -153,10 +171,13 @@ function initModels(sequelize) {
     image,
     keyword,
     language,
+    orders,
     page,
     pagecontent,
     pageimage,
     product,
+    productcardimage,
+    productcartimage,
     productimage,
     productkeyword,
     productpriceincurrency,

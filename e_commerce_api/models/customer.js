@@ -39,14 +39,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATEONLY,
       allowNull: true
     },
-    currency_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'currency',
-        key: 'id'
-      }
-    },
     shipping_address_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -66,6 +58,11 @@ module.exports = function(sequelize, DataTypes) {
     tax_number: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    user_id: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      unique: "unique_user_id"
     }
   }, {
     sequelize,
@@ -82,10 +79,11 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "currency_id",
+        name: "unique_user_id",
+        unique: true,
         using: "BTREE",
         fields: [
-          { name: "currency_id" },
+          { name: "user_id" },
         ]
       },
       {
