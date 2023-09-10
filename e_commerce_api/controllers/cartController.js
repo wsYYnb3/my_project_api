@@ -14,6 +14,10 @@ const CartController = {
   getAllByCustomerId: async (req, res) => {
     try {
       const { customerId } = req.params;
+      if (!customerId) {
+        console.log("empty");
+        return;
+      }
       const customer = await models.customer.findOne({
         where: { user_id: customerId },
       });
@@ -23,7 +27,7 @@ const CartController = {
       }
 
       const cartItems = await models.cartitem.findAll({
-        where: { customer_id: customer.id },
+        where: { customer_id: customer.id, deleted_at: null },
         include: [
           {
             model: models.product,
@@ -34,6 +38,7 @@ const CartController = {
         attributes: ["quantity"],
       });
 
+      console.log("Cart Items sent:", cartItems);
       res.status(200).json(cartItems);
     } catch (error) {
       console.error("Error in getAllByCustomerId:", error);
@@ -44,7 +49,7 @@ const CartController = {
   // Add an item to the cart
   addToCart: async (req, res) => {
     try {
-      const { id, quantity, customerId } = req.body;
+      const { productId, quantity, customerId } = req.body;
 
       const customer = await models.customer.findOne({
         where: { user_id: customerId },
@@ -54,25 +59,50 @@ const CartController = {
         return res.status(404).json({ error: "Customer not found" });
       }
 
-      if (!id || !quantity) {
+      if (!productId || !quantity) {
         return res
           .status(400)
           .json({ error: "Product ID and quantity are required" });
       }
 
-      const product = await models.product.findByPk(id);
+      const product = await models.product.findByPk(productId);
 
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
-
-      const cartItem = await models.cartitem.create({
-        customer_id: customer.id,
-        product_id: id,
-        quantity,
+      let cartItem = await models.cartitem.findOne({
+        where: {
+          customer_id: customer.id,
+          product_id: productId,
+          deleted_at: null,
+        },
+      });
+      if (cartItem) {
+        await cartItem.update({
+          customer_id: customer.id,
+          product_id: productId,
+          quantity: cartItem.quantity + req.body.quantity,
+        });
+      } else {
+        cartItem = await models.cartitem.create({
+          customer_id: customer.id,
+          product_id: productId,
+          quantity,
+        });
+      }
+      const newCartItemWithDetails = await models.cartitem.findOne({
+        where: { id: cartItem.id },
+        include: [
+          {
+            model: models.product,
+            as: "product",
+            include: getProductAssociations(models),
+          },
+        ],
+        attributes: ["id", "quantity"],
       });
 
-      res.status(201).json(cartItem);
+      res.status(201).json(newCartItemWithDetails);
     } catch (error) {
       console.error("Error in addToCart:", error);
       res.status(500).json({ error: error.message });
@@ -97,7 +127,7 @@ const CartController = {
       if (!cartItem) {
         return res.status(404).json({ error: "Cart item not found" });
       }
-
+      //await cartItem.update({ deleted_at: Date.now() });
       await cartItem.destroy();
       res.status(204).end();
     } catch (error) {
