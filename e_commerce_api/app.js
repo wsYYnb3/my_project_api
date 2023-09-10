@@ -8,6 +8,7 @@ const productsRouter = require("./routes/products");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const cartRoutes = require("./routes/cart");
+const wishlistRoutes = require("./routes/wishlist");
 const translationsRouter = require("./routes/translations");
 const categoriesRouter = require("./routes/categories");
 const { Clerk } = require("@clerk/clerk-sdk-node");
@@ -111,4 +112,5 @@ app.use("/api", translationsRouter);
   }
 });*/
 app.use("/cart", cartRoutes);
+app.use("/wishlist", wishlistRoutes);
 module.exports = app;
