@@ -15,7 +15,7 @@ const { Clerk } = require("@clerk/clerk-sdk-node");
 const webhooksRouter = require("./routes/webhooks");
 const bodyParser = require("body-parser");
 const userController = require("./controllers/userController");
-
+const searchRouter = require("./routes/search");
 const { Webhook } = require("svix");
 console.log(Webhook);
 if (!process.env.CLERK_SECRET_KEY) {
@@ -111,6 +111,7 @@ app.use("/api", translationsRouter);
     res.status(500).send("Internal Server Error");
   }
 });*/
+app.use("/api", searchRouter);
 app.use("/cart", cartRoutes);
 app.use("/wishlist", wishlistRoutes);
 module.exports = app;
