@@ -26,15 +26,11 @@ module.exports = function(sequelize, DataTypes) {
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: true
-    },
-    added_at: {
-      type: DataTypes.DATE,
-      allowNull: true
     }
   }, {
     sequelize,
     tableName: 'cartitem',
-    timestamps: false,
+    timestamps: true,
     paranoid: true,
     indexes: [
       {

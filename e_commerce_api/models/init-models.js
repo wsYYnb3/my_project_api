@@ -9,6 +9,7 @@ var _image = require("./image");
 var _keyword = require("./keyword");
 var _language = require("./language");
 var _orders = require("./orders");
+var _ordersitem = require("./ordersitem");
 var _page = require("./page");
 var _pagecontent = require("./pagecontent");
 var _pageimage = require("./pageimage");
@@ -41,6 +42,7 @@ function initModels(sequelize) {
   var keyword = _keyword(sequelize, DataTypes);
   var language = _language(sequelize, DataTypes);
   var orders = _orders(sequelize, DataTypes);
+  var ordersitem = _ordersitem(sequelize, DataTypes);
   var page = _page(sequelize, DataTypes);
   var pagecontent = _pagecontent(sequelize, DataTypes);
   var pageimage = _pageimage(sequelize, DataTypes);
@@ -104,6 +106,8 @@ function initModels(sequelize) {
   keyword.hasMany(productkeyword, { as: "productkeywords", foreignKey: "keyword_id"});
   translation.belongsTo(language, { as: "language", foreignKey: "language_id"});
   language.hasMany(translation, { as: "translations", foreignKey: "language_id"});
+  ordersitem.belongsTo(orders, { as: "order", foreignKey: "orders_id"});
+  orders.hasMany(ordersitem, { as: "ordersitems", foreignKey: "orders_id"});
   pagecontent.belongsTo(page, { as: "page", foreignKey: "page_id"});
   page.hasMany(pagecontent, { as: "pagecontents", foreignKey: "page_id"});
   pageimage.belongsTo(page, { as: "page", foreignKey: "page_id"});
@@ -112,6 +116,8 @@ function initModels(sequelize) {
   page.hasMany(useractivity, { as: "useractivities", foreignKey: "page_id"});
   cartitem.belongsTo(product, { as: "product", foreignKey: "product_id"});
   product.hasMany(cartitem, { as: "cartitems", foreignKey: "product_id"});
+  ordersitem.belongsTo(product, { as: "product", foreignKey: "product_id"});
+  product.hasMany(ordersitem, { as: "ordersitems", foreignKey: "product_id"});
   productcardimage.belongsTo(product, { as: "product", foreignKey: "product_id"});
   product.hasMany(productcardimage, { as: "productcardimages", foreignKey: "product_id"});
   productcartimage.belongsTo(product, { as: "product", foreignKey: "product_id"});
@@ -172,6 +178,7 @@ function initModels(sequelize) {
     keyword,
     language,
     orders,
+    ordersitem,
     page,
     pagecontent,
     pageimage,

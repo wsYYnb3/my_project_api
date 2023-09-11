@@ -1,17 +1,17 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('wishlistitem', {
+  return sequelize.define('ordersitem', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    customer_id: {
+    orders_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'customer',
+        model: 'orders',
         key: 'id'
       }
     },
@@ -22,10 +22,14 @@ module.exports = function(sequelize, DataTypes) {
         model: 'product',
         key: 'id'
       }
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'wishlistitem',
+    tableName: 'ordersitem',
     timestamps: true,
     paranoid: true,
     indexes: [
@@ -38,10 +42,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "customer_id",
+        name: "orders_id",
         using: "BTREE",
         fields: [
-          { name: "customer_id" },
+          { name: "orders_id" },
         ]
       },
       {

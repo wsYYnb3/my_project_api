@@ -27,7 +27,7 @@ const WishListController = {
       }
 
       const wishListItems = await models.wishlistitem.findAll({
-        where: { customer_id: customer.id, deleted_at: null },
+        where: { customer_id: customer.id, DeletedAt: null },
         include: [
           {
             model: models.product,
@@ -70,7 +70,7 @@ const WishListController = {
       const wishListItem = await models.wishlistitem.create({
         customer_id: customer.id,
         product_id: product_id,
-        deleted_at: null,
+        DeletedAt: null,
       });
       const newWishListItemWithDetails = await models.cartitem.findOne({
         where: { id: wishListItem.id },

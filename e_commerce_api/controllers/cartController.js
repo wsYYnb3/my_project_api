@@ -27,7 +27,7 @@ const CartController = {
       }
 
       const cartItems = await models.cartitem.findAll({
-        where: { customer_id: customer.id, deleted_at: null },
+        where: { customer_id: customer.id, DeletedAt: null },
         include: [
           {
             model: models.product,
@@ -74,7 +74,7 @@ const CartController = {
         where: {
           customer_id: customer.id,
           product_id: productId,
-          deleted_at: null,
+          DeletedAt: null,
         },
       });
       if (cartItem) {
