@@ -130,6 +130,7 @@ const ProductController = {
     }
   },
   search: async (req, res) => {
+    //Categories search to be added
     try {
       const query = req.query.q;
       const languageCode = req.query.lang || "en";
