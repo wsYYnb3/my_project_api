@@ -22,6 +22,18 @@ module.exports = function(sequelize, DataTypes) {
     zip: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    country: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    num: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    apt: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,

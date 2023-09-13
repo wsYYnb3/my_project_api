@@ -8,6 +8,7 @@ const productsRouter = require("./routes/products");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const cartRoutes = require("./routes/cart");
+const ordersRoutes = require("./routes/orders");
 const wishlistRoutes = require("./routes/wishlist");
 const translationsRouter = require("./routes/translations");
 const categoriesRouter = require("./routes/categories");
@@ -17,6 +18,7 @@ const bodyParser = require("body-parser");
 const userController = require("./controllers/userController");
 const searchRouter = require("./routes/search");
 const { Webhook } = require("svix");
+const verifyRouter = require("./routes/verify");
 console.log(Webhook);
 if (!process.env.CLERK_SECRET_KEY) {
   throw new Error("Missing Clerk Secret Key");
@@ -112,6 +114,8 @@ app.use("/api", translationsRouter);
   }
 });*/
 app.use("/api", searchRouter);
+app.use("/orders", ordersRoutes);
 app.use("/cart", cartRoutes);
 app.use("/wishlist", wishlistRoutes);
+app.use("/admin", verifyRouter);
 module.exports = app;

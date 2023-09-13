@@ -1,0 +1,199 @@
+const initModels = require("../models/init-models");
+const Sequelize = require("sequelize");
+const { getProductAssociations } = require("../helpers/helpers");
+const CartController = require("./cartController");
+const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
+  host: "localhost",
+  port: 3308,
+  dialect: "mysql",
+});
+const models = initModels(sequelize);
+
+const OrdersController = {
+  getAll: async (req, res) => {
+    try {
+      const orders = await models.orders.findAll({
+        where: { DeletedAt: null },
+        include: [
+          { model: models.address, as: "shipping_address" },
+          { model: models.address, as: "billing_address" },
+        ],
+      });
+      res.status(200).json(orders);
+    } catch {}
+  },
+  // Get all orders for a specific customer
+  getAllByCustomerId: async (req, res) => {
+    try {
+      const { customerId } = req.params;
+      const customer = await models.customer.findOne({
+        where: { user_id: customerId },
+      });
+
+      if (!customer) {
+        return res.status(404).json({ error: "Customer not found" });
+      }
+
+      const orders = await models.orders.findAll({
+        where: { customer_id: customer.id },
+        include: [
+          {
+            model: models.ordersitem,
+            as: "ordersitems",
+            include: [
+              {
+                model: models.product,
+                as: "product",
+                include: getProductAssociations(models),
+              },
+            ],
+          },
+        ],
+      });
+
+      res.status(200).json(orders);
+    } catch (error) {
+      console.error("Error in getAllByCustomerId:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  // Create a new order
+  createOrder: async (req, res) => {
+    try {
+      const {
+        customerId,
+        billingDetails,
+        currencyId,
+        isDeliveryAddressSame,
+        entityType,
+        total,
+        cart,
+        deliveryDetails,
+      } = req.body;
+      const customer = await models.customer.findOne({
+        where: { user_id: customerId },
+      });
+
+      if (!customer) {
+        return res.status(404).json({ error: "Customer not found" });
+      }
+
+      //unique user-id!!!!!!!1
+      const findAddress = async (details) => {
+        return await models.address.findOne({
+          where: {
+            apt: details.address.apt,
+            city: details.address.city,
+            country: details.address.country,
+            num: details.address.number,
+            state: details.address.state,
+            street: details.address.street,
+            zip: details.address.zip,
+          },
+        });
+      };
+
+      let billingAddress = await findAddress(billingDetails);
+      if (!billingAddress) {
+        billingAddress = await models.address.create({
+          apt: billingDetails.address.apt,
+          city: billingDetails.address.city,
+          country: billingDetails.address.country,
+          num: billingDetails.address.number,
+          state: billingDetails.address.state,
+          street: billingDetails.address.street,
+          zip: billingDetails.address.zip,
+        });
+      }
+
+      let deliveryAddress = billingAddress;
+      if (!isDeliveryAddressSame) {
+        deliveryAddress = await findAddress(deliveryDetails);
+        if (!deliveryAddress) {
+          deliveryAddress = await models.address.create({
+            apt: deliveryDetails.address.apt,
+            city: deliveryDetails.address.city,
+            country: deliveryDetails.address.country,
+            num: deliveryDetails.address.number,
+            state: deliveryDetails.address.state,
+            street: deliveryDetails.address.street,
+            zip: deliveryDetails.address.zip,
+          });
+        }
+      }
+
+      if (!cart || cart.length == 0) {
+        return res.status(404).json({ error: "Cart is empty" });
+      }
+      const newOrder = await models.orders.create({
+        customer_id: customer.id,
+        shipping_address_id: deliveryAddress.id,
+        currency_id: currencyId,
+        total,
+        billing_address_id: billingAddress.id,
+      });
+
+      await models.customer.create({
+        type: "buyer",
+        order_id: newOrder.id,
+        user_id: customer.id,
+        email: billingDetails.email,
+        name: billingDetails.name,
+        phone: billingDetails.phone.countryCode + billingDetails.phone.number,
+        taxNumber: billingDetails.taxNumber,
+        shipping_address_id: deliveryAddress.id,
+        billing_address_id: billingAddress.id,
+      });
+      // Adding order items
+      for (const item of cart) {
+        await models.ordersitem.create({
+          orders_id: newOrder.id,
+          product_id: item.product.id,
+          quantity: item.quantity,
+        });
+      }
+      res.status(201).json(newOrder);
+    } catch (error) {
+      console.error("Error in createOrder:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+  // Update an order status
+  updateOrderStatus: async (req, res) => {
+    try {
+      const { orderId, status } = req.body;
+      const order = await models.orders.findByPk(orderId);
+
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      await order.update({ status });
+      res.status(200).json(order);
+    } catch (error) {
+      console.error("Error in updateOrderStatus:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  // Delete an order (soft delete as you are using paranoid option)
+  deleteOrder: async (req, res) => {
+    try {
+      const { orderId } = req.params;
+      const order = await models.orders.findByPk(orderId);
+
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      await order.destroy();
+      res.status(204).end();
+    } catch (error) {
+      console.error("Error in deleteOrder:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+};
+
+module.exports = OrdersController;
