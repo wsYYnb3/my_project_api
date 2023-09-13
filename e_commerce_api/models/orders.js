@@ -37,6 +37,19 @@ module.exports = function(sequelize, DataTypes) {
     },
     status: {
       type: DataTypes.STRING(255),
+      allowNull: true,
+      defaultValue: "processing"
+    },
+    billing_address_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'address',
+        key: 'id'
+      }
+    },
+    tax_number: {
+      type: DataTypes.STRING(255),
       allowNull: true
     }
   }, {
@@ -72,6 +85,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "shipping_address_id" },
+        ]
+      },
+      {
+        name: "billing_address_id",
+        using: "BTREE",
+        fields: [
+          { name: "billing_address_id" },
         ]
       },
     ]

@@ -1,6 +1,7 @@
 const initModels = require("../models/init-models");
 const Sequelize = require("sequelize");
 const { getProductAssociations } = require("../helpers/helpers");
+const { getCustomerById } = require("../middlewares/customer/getCustomerById");
 const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
   host: "localhost",
   port: 3308,
@@ -45,7 +46,6 @@ const CartController = {
       res.status(500).json({ error: error.message });
     }
   },
-
   // Add an item to the cart
   addToCart: async (req, res) => {
     try {
@@ -135,7 +135,33 @@ const CartController = {
       res.status(500).json({ error: error.message });
     }
   },
+  clearCart: async (req, res) => {
+    try {
+      const { customerId } = req.body;
+      const customer = await models.customer.findOne({
+        where: { user_id: customerId },
+      });
 
+      if (!customer) {
+        return res.status(404).json({ error: "Customer not found" });
+      }
+
+      const cartItems = await models.cartitem.findAll({
+        where: { customer_id: customer.id },
+      });
+
+      if (!cartItems) {
+        return res.status(404).json({ error: "Cart item not found" });
+      }
+      await Promise.all(cartItems.map(async (item) => item.destroy()));
+
+      // await cartItems.destroy();
+      res.status(204).end();
+    } catch (error) {
+      console.error("Error in removeFromCart:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
   // Update a cart item (e.g., update quantity)
   updateCartItem: async (req, res) => {
     try {

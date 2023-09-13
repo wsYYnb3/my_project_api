@@ -72,6 +72,8 @@ function initModels(sequelize) {
   address.hasMany(customer, { as: "billing_address_customers", foreignKey: "billing_address_id"});
   orders.belongsTo(address, { as: "shipping_address", foreignKey: "shipping_address_id"});
   address.hasMany(orders, { as: "orders", foreignKey: "shipping_address_id"});
+  orders.belongsTo(address, { as: "billing_address", foreignKey: "billing_address_id"});
+  address.hasMany(orders, { as: "billing_address_orders", foreignKey: "billing_address_id"});
   vendor.belongsTo(address, { as: "address", foreignKey: "address_id"});
   address.hasMany(vendor, { as: "vendors", foreignKey: "address_id"});
   product.belongsTo(category, { as: "category", foreignKey: "category_id"});
@@ -82,8 +84,8 @@ function initModels(sequelize) {
   currency.hasMany(productpriceincurrency, { as: "productpriceincurrencies", foreignKey: "currency_id"});
   cartitem.belongsTo(customer, { as: "customer", foreignKey: "customer_id"});
   customer.hasMany(cartitem, { as: "cartitems", foreignKey: "customer_id"});
-  orders.belongsTo(customer, { as: "customer", foreignKey: "customer_id"});
-  customer.hasMany(orders, { as: "orders", foreignKey: "customer_id"});
+  orders.belongsTo(customer, { as: "customer_customer", foreignKey: "customer_id"});
+  customer.hasMany(orders, { as: "customer_orders", foreignKey: "customer_id"});
   session.belongsTo(customer, { as: "customer", foreignKey: "customer_id"});
   customer.hasMany(session, { as: "sessions", foreignKey: "customer_id"});
   ticket.belongsTo(customer, { as: "customer", foreignKey: "customer_id"});
@@ -106,6 +108,8 @@ function initModels(sequelize) {
   keyword.hasMany(productkeyword, { as: "productkeywords", foreignKey: "keyword_id"});
   translation.belongsTo(language, { as: "language", foreignKey: "language_id"});
   language.hasMany(translation, { as: "translations", foreignKey: "language_id"});
+  customer.belongsTo(orders, { as: "order", foreignKey: "order_id"});
+  orders.hasMany(customer, { as: "customers", foreignKey: "order_id"});
   ordersitem.belongsTo(orders, { as: "order", foreignKey: "orders_id"});
   orders.hasMany(ordersitem, { as: "ordersitems", foreignKey: "orders_id"});
   pagecontent.belongsTo(page, { as: "page", foreignKey: "page_id"});

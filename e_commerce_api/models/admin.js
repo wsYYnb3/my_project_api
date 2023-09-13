@@ -2,8 +2,7 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('admin', {
     id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(255),
       allowNull: false,
       primaryKey: true
     },
@@ -12,6 +11,10 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     password_hash: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    e_mail: {
       type: DataTypes.STRING(255),
       allowNull: true
     }

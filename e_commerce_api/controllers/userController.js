@@ -99,24 +99,24 @@ const UserController = {
   },
   storeWebhookUserData: async (evt) => {
     try {
-      const { user_id, email_addresses } = evt.data;
+      const { id, email_addresses } = evt.data;
       const email = email_addresses[0]?.email_address;
       const type = "clerk";
       const existingCustomer = await models.customer.findOne({
         where: {
-          user_id: user_id,
+          user_id: id,
         },
       });
       if (existingCustomer) {
-        console.log(`User ${user_id} already exists in the database.`);
+        console.log(`User ${id} already exists in the database.`);
       } else {
         await models.customer.create({
-          user_id,
+          user_id: id,
           email,
           type,
         });
 
-        console.log(`User ${user_id} was successfully stored.`);
+        console.log(`User ${id} was successfully stored.`);
       }
     } catch (error) {
       console.error("Error in storeWebhookUserData:", error);
