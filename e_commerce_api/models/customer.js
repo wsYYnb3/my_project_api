@@ -69,7 +69,12 @@ module.exports = function(sequelize, DataTypes) {
       references: {
         model: 'orders',
         key: 'id'
-      }
+      },
+      unique: "customer_ibfk_4"
+    },
+    real_name: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,
@@ -86,6 +91,14 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
+        name: "order_id",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "order_id" },
+        ]
+      },
+      {
         name: "shipping_address_id",
         using: "BTREE",
         fields: [
@@ -97,13 +110,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "billing_address_id" },
-        ]
-      },
-      {
-        name: "order_id",
-        using: "BTREE",
-        fields: [
-          { name: "order_id" },
         ]
       },
     ]

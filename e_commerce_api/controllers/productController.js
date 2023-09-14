@@ -13,60 +13,12 @@ const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
 const models = initModels(sequelize);
 
 const ProductController = {
-  // Get all products
   getAll: async (req, res) => {
     try {
-      // console.log("Getting all products...");
       const products = await models.product.findAll({
-        include: getProductAssociations(models) /*[
-          {
-            model: models.product,
-            as: "product",
-            include: getProductAssociations(models),
-          },
-          {
-            model: models.productpriceincurrency,
-            as: "productpriceincurrencies",
-          },
-          { model: models.unitofmeasure, as: "unit_of_measure" },
-          {
-            model: models.productimage,
-            as: "productimages",
-            include: [
-              {
-                model: models.image,
-                as: "image",
-              },
-            ],
-          },
-          {
-            model: models.productcartimage,
-            as: "productcartimages",
-            include: [
-              {
-                model: models.image,
-                as: "image",
-              },
-            ],
-          },
-          {
-            model: models.productcardimage,
-            as: "productcardimages",
-            include: [
-              {
-                model: models.image,
-                as: "image",
-              },
-            ],
-          },
-          { model: models.productspecification, as: "productspecifications" },
-          { model: models.vendor, as: "vendor" },
-          { model: models.keyword, as: "keyword_id_keywords" },
-          { model: models.technicalinformation, as: "technicalinformations" },
-          { model: models.category, as: "category" },
-        ],,*/,
+        include: getProductAssociations(models),
       });
-      //console.log("Products found:", products);
+
       res.status(200).json(products);
     } catch (error) {
       console.error("Error in getAll:", error);
@@ -74,7 +26,6 @@ const ProductController = {
     }
   },
 
-  // Get a specific product by ID
   getById: async (req, res) => {
     try {
       const product = await models.product.findByPk(req.params.id, {
@@ -90,7 +41,6 @@ const ProductController = {
     }
   },
 
-  // Create a new product
   create: async (req, res) => {
     try {
       const product = await models.product.create(req.body);
@@ -100,7 +50,6 @@ const ProductController = {
     }
   },
 
-  // Update a product
   update: async (req, res) => {
     try {
       const product = await models.product.findByPk(req.params.id);
@@ -115,7 +64,6 @@ const ProductController = {
     }
   },
 
-  // Delete a product
   delete: async (req, res) => {
     try {
       const product = await models.product.findByPk(req.params.id);
@@ -130,7 +78,6 @@ const ProductController = {
     }
   },
   search: async (req, res) => {
-    //Categories search to be added
     try {
       const query = req.query.q;
       const languageCode = req.query.lang || "en";

@@ -8,7 +8,7 @@ const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
   dialect: "mysql",
 });
 const models = initModels(sequelize);
-
+const verifyAdminMW = require("../middlewares/admin/verifyAdminMW");
 const OrdersController = {
   getAll: async (req, res) => {
     try {
@@ -17,23 +17,32 @@ const OrdersController = {
         include: [
           { model: models.address, as: "shipping_address" },
           { model: models.address, as: "billing_address" },
+          { model: models.customer, as: "customer" },
+          {
+            model: models.ordersitem,
+            as: "ordersitems",
+            include: [
+              {
+                model: models.product,
+                as: "product",
+                include: getProductAssociations(models),
+              },
+            ],
+          },
         ],
       });
       res.status(200).json(orders);
     } catch {}
   },
-  // Get all orders for a specific customer
   getAllByCustomerId: async (req, res) => {
     try {
       const { customerId } = req.params;
       const customer = await models.customer.findOne({
         where: { user_id: customerId },
       });
-
       if (!customer) {
         return res.status(404).json({ error: "Customer not found" });
       }
-
       const orders = await models.orders.findAll({
         where: { customer_id: customer.id },
         include: [
@@ -50,15 +59,12 @@ const OrdersController = {
           },
         ],
       });
-
       res.status(200).json(orders);
     } catch (error) {
       console.error("Error in getAllByCustomerId:", error);
       res.status(500).json({ error: error.message });
     }
   },
-
-  // Create a new order
   createOrder: async (req, res) => {
     try {
       const {
@@ -74,11 +80,9 @@ const OrdersController = {
       const customer = await models.customer.findOne({
         where: { user_id: customerId },
       });
-
       if (!customer) {
         return res.status(404).json({ error: "Customer not found" });
       }
-
       //unique user-id!!!!!!!1
       const findAddress = async (details) => {
         return await models.address.findOne({
@@ -93,7 +97,6 @@ const OrdersController = {
           },
         });
       };
-
       let billingAddress = await findAddress(billingDetails);
       if (!billingAddress) {
         billingAddress = await models.address.create({
@@ -106,7 +109,6 @@ const OrdersController = {
           zip: billingDetails.address.zip,
         });
       }
-
       let deliveryAddress = billingAddress;
       if (!isDeliveryAddressSame) {
         deliveryAddress = await findAddress(deliveryDetails);
@@ -122,7 +124,6 @@ const OrdersController = {
           });
         }
       }
-
       if (!cart || cart.length == 0) {
         return res.status(404).json({ error: "Cart is empty" });
       }
@@ -133,7 +134,6 @@ const OrdersController = {
         total,
         billing_address_id: billingAddress.id,
       });
-
       await models.customer.create({
         type: "buyer",
         order_id: newOrder.id,
@@ -144,8 +144,8 @@ const OrdersController = {
         taxNumber: billingDetails.taxNumber,
         shipping_address_id: deliveryAddress.id,
         billing_address_id: billingAddress.id,
+        real_name: billingDetails.name,
       });
-      // Adding order items
       for (const item of cart) {
         await models.ordersitem.create({
           orders_id: newOrder.id,
@@ -159,34 +159,27 @@ const OrdersController = {
       res.status(500).json({ error: error.message });
     }
   },
-  // Update an order status
   updateOrderStatus: async (req, res) => {
     try {
-      const { orderId, status } = req.body;
-      const order = await models.orders.findByPk(orderId);
-
+      const { data } = req.body;
+      const order = await models.orders.findByPk(data.orderId);
       if (!order) {
         return res.status(404).json({ error: "Order not found" });
       }
-
-      await order.update({ status });
+      await order.update({ status: data.status });
       res.status(200).json(order);
     } catch (error) {
       console.error("Error in updateOrderStatus:", error);
       res.status(500).json({ error: error.message });
     }
   },
-
-  // Delete an order (soft delete as you are using paranoid option)
   deleteOrder: async (req, res) => {
     try {
       const { orderId } = req.params;
       const order = await models.orders.findByPk(orderId);
-
       if (!order) {
         return res.status(404).json({ error: "Order not found" });
       }
-
       await order.destroy();
       res.status(204).end();
     } catch (error) {
@@ -195,5 +188,4 @@ const OrdersController = {
     }
   },
 };
-
 module.exports = OrdersController;

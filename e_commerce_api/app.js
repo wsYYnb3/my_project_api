@@ -28,7 +28,7 @@ var app = express();
 const clerk = new Clerk({
   apiKey: process.env.CLERK_SECRET_KEY,
 });
-//const svix = new Svix(process.env.SVIX_SECRET_KEY);
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(bodyParser.json());

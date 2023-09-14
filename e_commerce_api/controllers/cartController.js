@@ -11,7 +11,6 @@ const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
 const models = initModels(sequelize);
 
 const CartController = {
-  // Get all cart items for a specific customer
   getAllByCustomerId: async (req, res) => {
     try {
       const { customerId } = req.params;
@@ -46,7 +45,7 @@ const CartController = {
       res.status(500).json({ error: error.message });
     }
   },
-  // Add an item to the cart
+
   addToCart: async (req, res) => {
     try {
       const { productId, quantity, customerId } = req.body;
@@ -127,7 +126,7 @@ const CartController = {
       if (!cartItem) {
         return res.status(404).json({ error: "Cart item not found" });
       }
-      //await cartItem.update({ deleted_at: Date.now() });
+
       await cartItem.destroy();
       res.status(204).end();
     } catch (error) {
@@ -155,14 +154,13 @@ const CartController = {
       }
       await Promise.all(cartItems.map(async (item) => item.destroy()));
 
-      // await cartItems.destroy();
       res.status(204).end();
     } catch (error) {
       console.error("Error in removeFromCart:", error);
       res.status(500).json({ error: error.message });
     }
   },
-  // Update a cart item (e.g., update quantity)
+
   updateCartItem: async (req, res) => {
     try {
       const { cartItemId } = req.params;

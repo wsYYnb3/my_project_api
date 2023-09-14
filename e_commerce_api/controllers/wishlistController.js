@@ -10,7 +10,6 @@ const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
 const models = initModels(sequelize);
 
 const WishListController = {
-  // Get all wishList items for a specific customer
   getAllByCustomerId: async (req, res) => {
     try {
       const { customerId } = req.params;
@@ -44,7 +43,6 @@ const WishListController = {
     }
   },
 
-  // Add an item to the wishlist
   addToWishList: async (req, res) => {
     try {
       const { product_id, customer_id } = req.body;
