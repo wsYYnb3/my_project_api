@@ -33,7 +33,6 @@ const UserController = {
     }
   },
 
-  // Get a customer by ID
   getById: async (req, res) => {
     try {
       const customer = await models.customer.findByPk(req.params.id, {
@@ -58,7 +57,6 @@ const UserController = {
     }
   },
 
-  // Create a new customer
   create: async (req, res) => {
     try {
       const customer = await models.customer.create(req.body);
@@ -68,7 +66,6 @@ const UserController = {
     }
   },
 
-  // Update a customer
   update: async (req, res) => {
     try {
       const customer = await models.product.findByPk(req.params.id);
@@ -83,7 +80,6 @@ const UserController = {
     }
   },
 
-  // Delete a customer
   delete: async (req, res) => {
     try {
       const customer = await models.product.findByPk(req.params.id);
@@ -123,48 +119,9 @@ const UserController = {
     }
   },
 
-  // Set user-specific cookies
   setUserCookie: (res, userId) => {
     const cookieId = userId || uuidv4();
     res.cookie("userCookieId", cookieId, { maxAge: 900000, httpOnly: true });
-  },
-
-  logCartAction: async (req, res) => {
-    try {
-      const user_id = req.cookies.userCookieId;
-      const { product_id, quantity } = req.body;
-
-      await models.cartitem.upsert(
-        {
-          user_id,
-          product_id,
-          quantity,
-        },
-        { fields: ["user_id", "product_id"] }
-      );
-
-      res.status(200).json({ message: "Cart updated successfully" });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
-  logWishListAction: async (req, res) => {
-    try {
-      const customer_id = req.cookies.userCookieId;
-      const { product_id } = req.body;
-
-      await models.wishlistitem.upsert(
-        {
-          customer_id,
-          product_id,
-        },
-        { fields: ["customer_id", "product_id"] }
-      );
-
-      res.status(200).json({ message: "Wishlist updated successfully" });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
   },
 };
 

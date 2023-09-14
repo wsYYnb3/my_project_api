@@ -109,7 +109,7 @@ function initModels(sequelize) {
   translation.belongsTo(language, { as: "language", foreignKey: "language_id"});
   language.hasMany(translation, { as: "translations", foreignKey: "language_id"});
   customer.belongsTo(orders, { as: "order", foreignKey: "order_id"});
-  orders.hasMany(customer, { as: "customers", foreignKey: "order_id"});
+  orders.hasOne(customer, { as: "customer", foreignKey: "order_id"});
   ordersitem.belongsTo(orders, { as: "order", foreignKey: "orders_id"});
   orders.hasMany(ordersitem, { as: "ordersitems", foreignKey: "orders_id"});
   pagecontent.belongsTo(page, { as: "page", foreignKey: "page_id"});

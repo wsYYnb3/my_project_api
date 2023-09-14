@@ -8,22 +8,26 @@ const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
 });
 const models = initModels(sequelize);
 
-async function verifyAdmin(req, res, next) {
+async function verifyAdminMW(req, res, next) {
   try {
     console.log(req.body);
     //verifyClerkSession(req, res, next);
-    const { id } = req.params;
-    const admin = await models.admin.findOne({ where: { id: id } });
-    if (admin) {
-      res.status(200).json(admin);
-      // next();
+    const { data } = req.body;
+
+    const id = data.adminId;
+    if (id) {
+      const admin = await models.admin.findOne({ where: { id: id } });
+      if (admin) {
+        next();
+      } else {
+        res.status(404).json({ error: "Not admin" });
+      }
     } else {
-      res.status(404).json({ error: "Not admin" });
-      //  next();
+      res.status(500).json({ error: "No ID" });
     }
   } catch (error) {
     console.error("Error in Admin verification", error);
     res.status(500).json({ error: error.message });
   }
 }
-module.exports = verifyAdmin;
+module.exports = verifyAdminMW;
