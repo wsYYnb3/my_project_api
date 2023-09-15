@@ -96,7 +96,7 @@ const AddressController = {
         include: [
           {
             model: models.address,
-            as: "shipping_address",
+            as: "billing_address",
           },
         ],
       });
@@ -111,3 +111,5 @@ const AddressController = {
     }
   },
 };
+
+module.exports = AddressController;
