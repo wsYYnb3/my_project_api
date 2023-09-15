@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 const productsRouter = require("./routes/products");
+const addressRouter = require("./routes/address");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const cartRoutes = require("./routes/cart");
@@ -19,7 +20,8 @@ const userController = require("./controllers/userController");
 const searchRouter = require("./routes/search");
 const { Webhook } = require("svix");
 const verifyRouter = require("./routes/verify");
-console.log(Webhook);
+const imagesRouter = require("./routes/images");
+
 if (!process.env.CLERK_SECRET_KEY) {
   throw new Error("Missing Clerk Secret Key");
 }
@@ -28,7 +30,7 @@ var app = express();
 const clerk = new Clerk({
   apiKey: process.env.CLERK_SECRET_KEY,
 });
-
+//const svix = new Svix(process.env.SVIX_SECRET_KEY);
 app.use(logger("dev"));
 app.use(express.json());
 app.use(bodyParser.json());
@@ -103,6 +105,7 @@ app.use("/categories", categoriesRouter);
 app.use("/", indexRouter);
 app.use("/customer", usersRouter);
 app.use("/api", translationsRouter);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 /*app.get("/test", async (req, res) => {
   try {
     const clientList = await clerk.users.getUserList();
@@ -113,9 +116,13 @@ app.use("/api", translationsRouter);
     res.status(500).send("Internal Server Error");
   }
 });*/
+app.use("/address", addressRouter);
 app.use("/api", searchRouter);
 app.use("/orders", ordersRoutes);
 app.use("/cart", cartRoutes);
 app.use("/wishlist", wishlistRoutes);
 app.use("/admin", verifyRouter);
+app.use("/", imagesRouter);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 module.exports = app;

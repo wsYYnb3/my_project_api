@@ -9,6 +9,8 @@ const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
 });
 const models = initModels(sequelize);
 const verifyAdminMW = require("../middlewares/admin/verifyAdminMW");
+const { Op } = require("sequelize");
+
 const OrdersController = {
   getAll: async (req, res) => {
     try {
@@ -87,7 +89,7 @@ const OrdersController = {
       const findAddress = async (details) => {
         return await models.address.findOne({
           where: {
-            apt: details.address.apt,
+            apt: details.address.apt ?? null,
             city: details.address.city,
             country: details.address.country,
             num: details.address.number,
@@ -97,10 +99,11 @@ const OrdersController = {
           },
         });
       };
+      console.log(billingDetails);
       let billingAddress = await findAddress(billingDetails);
       if (!billingAddress) {
         billingAddress = await models.address.create({
-          apt: billingDetails.address.apt,
+          apt: billingDetails.address.apt ?? null,
           city: billingDetails.address.city,
           country: billingDetails.address.country,
           num: billingDetails.address.number,
@@ -114,7 +117,7 @@ const OrdersController = {
         deliveryAddress = await findAddress(deliveryDetails);
         if (!deliveryAddress) {
           deliveryAddress = await models.address.create({
-            apt: deliveryDetails.address.apt,
+            apt: deliveryDetails.address.apt ?? null,
             city: deliveryDetails.address.city,
             country: deliveryDetails.address.country,
             num: deliveryDetails.address.number,
