@@ -26,7 +26,7 @@ const imagesRouter = require("./routes/images");
 if (!process.env.CLERK_SECRET_KEY) {
   throw new Error("Missing Clerk Secret Key");
 }
-
+const session_secret = process.env.session_secret;
 var app = express();
 const clerk = new Clerk({
   apiKey: process.env.CLERK_SECRET_KEY,
@@ -105,7 +105,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(
   session({
-    secret: "your_secret_key_here",
+    secret: session_secret,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false, httpOnly: true, maxAge: 60000 },
