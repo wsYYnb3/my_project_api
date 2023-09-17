@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
+const session = require("express-session");
 const productsRouter = require("./routes/products");
 const addressRouter = require("./routes/address");
 var indexRouter = require("./routes/index");
@@ -40,6 +41,9 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+    optionsSuccessStatus: 204,
   })
 );
 app.use((req, res, next) => {
@@ -99,6 +103,15 @@ app.post("/webhook", async function (req, res) {
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
+app.use(
+  session({
+    secret: "your_secret_key_here",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false, httpOnly: true, maxAge: 60000 },
+  })
+);
+
 app.use("/products", productsRouter);
 //app.use("/webhook", webhooksRouter);
 app.use("/categories", categoriesRouter);
