@@ -79,13 +79,20 @@ const OrdersController = {
         cart,
         deliveryDetails,
       } = req.body;
-      const customer = await models.customer.findOne({
-        where: { user_id: customerId },
-      });
+      let customer;
+      if (customerId) {
+        customer = await models.customer.findOne({
+          where: { user_id: customerId },
+        });
+      } else {
+        customer = await models.customer.findOne({
+          where: { user_id: req.session.uuid },
+        });
+      }
+
       if (!customer) {
         return res.status(404).json({ error: "Customer not found" });
       }
-      //unique user-id!!!!!!!1
       const findAddress = async (details) => {
         return await models.address.findOne({
           where: {
@@ -147,7 +154,8 @@ const OrdersController = {
         taxNumber: billingDetails.taxNumber,
         shipping_address_id: deliveryAddress.id,
         billing_address_id: billingAddress.id,
-        real_name: billingDetails.name,
+        billing_name: billingDetails.name,
+        shipping_name: deliveryDetails?.name ?? billingDetails.name,
       });
       for (const item of cart) {
         await models.ordersitem.create({

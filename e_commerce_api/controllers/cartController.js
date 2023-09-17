@@ -1,5 +1,6 @@
 const initModels = require("../models/init-models");
 const Sequelize = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 const { getProductAssociations } = require("../helpers/helpers");
 const { getCustomerById } = require("../middlewares/customer/getCustomerById");
 const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
@@ -13,17 +14,31 @@ const models = initModels(sequelize);
 const CartController = {
   getAllByCustomerId: async (req, res) => {
     try {
-      const { customerId } = req.params;
-      if (!customerId) {
-        console.log("empty");
-        return;
-      }
-      const customer = await models.customer.findOne({
-        where: { user_id: customerId },
-      });
+      const { customerId } = req.body;
+      let customer;
+      if (customerId) {
+        customer = await models.customer.findOne({
+          where: { user_id: customerId },
+        });
 
-      if (!customer) {
-        return res.status(404).json({ error: "Customer not found" });
+        if (!customer) {
+          return res.status(404).json({ error: "Customer not found" });
+        }
+      } else {
+        if (!req.session.uuid) {
+          req.session.uuid = uuidv4();
+        }
+
+        customer = await models.customer.findOne({
+          where: { user_id: req.session.uuid },
+        });
+
+        if (!customer) {
+          customer = await models.customer.create({
+            user_id: req.session.uuid,
+            type: "guest",
+          });
+        }
       }
 
       const cartItems = await models.cartitem.findAll({
@@ -49,13 +64,30 @@ const CartController = {
   addToCart: async (req, res) => {
     try {
       const { productId, quantity, customerId } = req.body;
+      let customer;
+      if (customerId) {
+        customer = await models.customer.findOne({
+          where: { user_id: customerId },
+        });
 
-      const customer = await models.customer.findOne({
-        where: { user_id: customerId },
-      });
+        if (!customer) {
+          return res.status(404).json({ error: "Customer not found" });
+        }
+      } else {
+        if (!req.session.uuid) {
+          req.session.uuid = uuidv4();
+        }
 
-      if (!customer) {
-        return res.status(404).json({ error: "Customer not found" });
+        customer = await models.customer.findOne({
+          where: { user_id: req.session.uuid },
+        });
+
+        if (!customer) {
+          customer = await models.customer.create({
+            user_id: req.session.uuid,
+            type: "guest",
+          });
+        }
       }
 
       if (!productId || !quantity) {
@@ -101,7 +133,9 @@ const CartController = {
         attributes: ["id", "quantity"],
       });
 
-      res.status(201).json(newCartItemWithDetails);
+      res
+        .status(201)
+        .json({ newCartItemWithDetails, customerId: customer.user_id });
     } catch (error) {
       console.error("Error in addToCart:", error);
       res.status(500).json({ error: error.message });
@@ -110,15 +144,21 @@ const CartController = {
 
   removeFromCart: async (req, res) => {
     try {
-      const { product_id, customer_id } = req.body;
-      const customer = await models.customer.findOne({
-        where: { user_id: customer_id },
-      });
+      const { customerId, product_id } = req.body;
+      let customer;
+      if (customerId) {
+        customer = await models.customer.findOne({
+          where: { user_id: customerId },
+        });
+      } else {
+        customer = await models.customer.findOne({
+          where: { user_id: req.session.uuid },
+        });
+      }
 
       if (!customer) {
         return res.status(404).json({ error: "Customer not found" });
       }
-
       const cartItem = await models.cartitem.findOne({
         where: { product_id: product_id, customer_id: customer.id },
       });
@@ -137,9 +177,16 @@ const CartController = {
   clearCart: async (req, res) => {
     try {
       const { customerId } = req.body;
-      const customer = await models.customer.findOne({
-        where: { user_id: customerId },
-      });
+      let customer;
+      if (customerId) {
+        customer = await models.customer.findOne({
+          where: { user_id: customerId },
+        });
+      } else {
+        customer = await models.customer.findOne({
+          where: { user_id: req.session.uuid },
+        });
+      }
 
       if (!customer) {
         return res.status(404).json({ error: "Customer not found" });

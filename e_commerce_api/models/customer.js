@@ -72,7 +72,11 @@ module.exports = function(sequelize, DataTypes) {
       },
       unique: "customer_ibfk_4"
     },
-    real_name: {
+    billing_name: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    shipping_name: {
       type: DataTypes.STRING(255),
       allowNull: true
     }
