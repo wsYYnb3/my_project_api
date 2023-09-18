@@ -50,21 +50,11 @@ app.use((req, res, next) => {
   req.clerk = clerk;
   next();
 });
-/*app.use(async (req, res, next) => {
-  req.clerk = clerk;
-  try {
-    req.clientList = await clerk.users.getUserList();
-    console.log(req.clientList);
-  } catch (e) {
-    console.log("Failed to get client list:", e);
-  }
-  next();
-});*/
+
 app.post("/webhook", async function (req, res) {
   try {
     let payload = req.body;
     if (!Buffer.isBuffer(payload)) {
-      console.log("Converting payload to Buffer.");
       payload = Buffer.from(JSON.stringify(payload));
     }
     const headers = req.headers;
@@ -78,8 +68,7 @@ app.post("/webhook", async function (req, res) {
     const evt = wh.verify(payload, headers);
     const id = evt.data.id;
     const eventType = evt.type;
-    console.log("Event: ", eventType);
-    console.log(evt);
+
     if (eventType === "user.created") {
       console.log(`User ${id} was ${eventType}`);
       console.log(evt.data.email_addresses[0].email_address);
@@ -113,22 +102,13 @@ app.use(
 );
 
 app.use("/products", productsRouter);
-//app.use("/webhook", webhooksRouter);
+
 app.use("/categories", categoriesRouter);
 app.use("/", indexRouter);
 app.use("/customer", usersRouter);
 app.use("/api", translationsRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-/*app.get("/test", async (req, res) => {
-  try {
-    const clientList = await clerk.users.getUserList();
-    console.log(clientList);
-    res.send(clientList);
-  } catch (e) {
-    console.log("Failed to get client list:", e);
-    res.status(500).send("Internal Server Error");
-  }
-});*/
+
 app.use("/address", addressRouter);
 app.use("/api", searchRouter);
 app.use("/orders", ordersRoutes);
