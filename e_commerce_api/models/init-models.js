@@ -349,6 +349,16 @@ function initModels(sequelize) {
     foreignKey: "info_key",
     targetKey: "translation_key",
   });
+  customer.hasOne(customer, {
+    as: "ParentCustomer",
+    foreignKey: "user_id",
+    sourceKey: "id",
+  });
+  customer.belongsTo(customer, {
+    as: "ChildCustomer",
+    foreignKey: "id",
+    targetKey: "user_id",
+  });
   translation.hasMany(technicalinformation, {
     as: "technicalinformations",
     foreignKey: "info_key",

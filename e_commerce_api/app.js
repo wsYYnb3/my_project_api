@@ -22,7 +22,7 @@ const searchRouter = require("./routes/search");
 const { Webhook } = require("svix");
 const verifyRouter = require("./routes/verify");
 const imagesRouter = require("./routes/images");
-
+const ticketRouter = require("./routes/ticket");
 if (!process.env.CLERK_SECRET_KEY) {
   throw new Error("Missing Clerk Secret Key");
 }
@@ -117,5 +117,5 @@ app.use("/wishlist", wishlistRoutes);
 app.use("/admin", verifyRouter);
 app.use("/", imagesRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
+app.use("/ticket", ticketRouter);
 module.exports = app;
