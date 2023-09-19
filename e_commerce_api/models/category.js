@@ -26,6 +26,10 @@ module.exports = function(sequelize, DataTypes) {
     parent_id: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    icon: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

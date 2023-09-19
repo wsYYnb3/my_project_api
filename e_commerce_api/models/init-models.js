@@ -349,16 +349,6 @@ function initModels(sequelize) {
     foreignKey: "info_key",
     targetKey: "translation_key",
   });
-  customer.hasOne(customer, {
-    as: "ParentCustomer",
-    foreignKey: "user_id",
-    sourceKey: "id",
-  });
-  customer.belongsTo(customer, {
-    as: "ChildCustomer",
-    foreignKey: "id",
-    targetKey: "user_id",
-  });
   translation.hasMany(technicalinformation, {
     as: "technicalinformations",
     foreignKey: "info_key",
@@ -373,7 +363,16 @@ function initModels(sequelize) {
   });
   product.belongsTo(vendor, { as: "vendor", foreignKey: "vendor_id" });
   vendor.hasMany(product, { as: "products", foreignKey: "vendor_id" });
-
+  customer.hasOne(customer, {
+    as: "ParentCustomer",
+    foreignKey: "user_id",
+    sourceKey: "id",
+  });
+  customer.belongsTo(customer, {
+    as: "ChildCustomer",
+    foreignKey: "id",
+    targetKey: "user_id",
+  });
   return {
     address,
     admin,
