@@ -19,6 +19,7 @@ const CategoryController = {
             as: "products",
           },*/
         ],
+        where: { parent_id: !null },
       });
       res.status(200).json(categories);
     } catch (error) {
