@@ -10,11 +10,12 @@ const models = initModels(sequelize);
 
 async function verifyAdminMW(req, res, next) {
   try {
-    console.log(req.body);
+    console.log("body", req.body);
     //verifyClerkSession(req, res, next);
     const { data } = req.body;
+    const { adminId } = req.params;
+    const id = data?.adminId ?? adminId;
 
-    const id = data.adminId;
     if (id) {
       const admin = await models.admin.findOne({ where: { id: id } });
       if (admin) {
