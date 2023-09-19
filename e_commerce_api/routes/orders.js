@@ -7,7 +7,7 @@ router.get("/get/:customerId", OrdersController.getAllByCustomerId);
 router.post("/add/:customerId", OrdersController.createOrder);
 
 router.delete("/del", OrdersController.deleteOrder);
-
+router.get("/get/all/id", OrdersController.getAllOrdersID);
 router.put("/update", verifyAdminMW, OrdersController.updateOrderStatus);
 router.get("/admin/", OrdersController.getAll);
 module.exports = router;

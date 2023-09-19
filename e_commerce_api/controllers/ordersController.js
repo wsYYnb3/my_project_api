@@ -34,7 +34,22 @@ const OrdersController = {
         ],
       });
       res.status(200).json(orders);
-    } catch {}
+    } catch (error) {
+      console.error("Error in getAllOrders:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+  getAllOrdersID: async (req, res) => {
+    try {
+      const orders = await models.orders.findAll({
+        where: { DeletedAt: null },
+        attributes: ["id"],
+      });
+      res.status(200).json(orders);
+    } catch (error) {
+      console.error("Error in getAllOrdersID:", error);
+      res.status(500).json({ error: error.message });
+    }
   },
   getAllByCustomerId: async (req, res) => {
     try {
