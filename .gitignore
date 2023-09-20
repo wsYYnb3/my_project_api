@@ -2,3 +2,4 @@
 e_commerce_api/env.local
 env.local
 env.local
+e_commerce_api/.env

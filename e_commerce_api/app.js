@@ -26,7 +26,8 @@ const ticketRouter = require("./routes/ticket");
 if (!process.env.CLERK_SECRET_KEY) {
   throw new Error("Missing Clerk Secret Key");
 }
-const session_secret = process.env.session_secret;
+const session_secret = process.env.SESSION_SECRET;
+console.log(session_secret);
 var app = express();
 const clerk = new Clerk({
   apiKey: process.env.CLERK_SECRET_KEY,
@@ -63,14 +64,13 @@ app.post("/webhook", async function (req, res) {
       console.error("Webhook secret is empty");
       return res.status(500).send("Internal Server Error");
     }
-
+    console.log(webhookSecret);
     const wh = new Webhook(webhookSecret);
     const evt = wh.verify(payload, headers);
     const id = evt.data.id;
     const eventType = evt.type;
-
     if (eventType === "user.created") {
-      console.log(`User ${id} was ${eventType}`);
+      console.log(`User ${id}  ${eventType}`);
       console.log(evt.data.email_addresses[0].email_address);
       await userController.storeWebhookUserData(evt);
     }
