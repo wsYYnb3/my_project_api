@@ -14,17 +14,17 @@ const models = initModels(sequelize);
 const CartController = {
   getAllByCustomerId: async (req, res) => {
     try {
-      const { customerId } = req.body;
+      let customerId;
+      if (req.params && req.params.customerId) {
+        customerId = req.params.customerId;
+      } else if (req.body && req.body.customerId) {
+        customerId = req.body.customerId;
+      }
       let customer;
-      if (customerId) {
-        customer = await models.customer.findOne({
-          where: { user_id: customerId },
-        });
-
-        if (!customer) {
-          return res.status(404).json({ error: "Customer not found" });
-        }
-      } else {
+      customer = await models.customer.findOne({
+        where: { user_id: customerId },
+      });
+      if (!customer) {
         if (!req.session.uuid) {
           req.session.uuid = uuidv4();
         }
@@ -32,7 +32,6 @@ const CartController = {
         customer = await models.customer.findOne({
           where: { user_id: req.session.uuid },
         });
-
         if (!customer) {
           customer = await models.customer.create({
             user_id: req.session.uuid,
@@ -64,6 +63,7 @@ const CartController = {
   addToCart: async (req, res) => {
     try {
       const { productId, quantity, customerId } = req.body;
+
       let customer;
       if (customerId) {
         customer = await models.customer.findOne({
@@ -144,11 +144,11 @@ const CartController = {
 
   removeFromCart: async (req, res) => {
     try {
-      const { customerId, product_id } = req.body;
+      const { customer_id, product_id } = req.body;
       let customer;
-      if (customerId) {
+      if (customer_id) {
         customer = await models.customer.findOne({
-          where: { user_id: customerId },
+          where: { user_id: customer_id },
         });
       } else {
         customer = await models.customer.findOne({
