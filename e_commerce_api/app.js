@@ -104,7 +104,6 @@ app.use("/products", productsRouter);
 
 app.use("/categories", categoriesRouter);
 app.use("/", indexRouter);
-app.use("/customer", usersRouter);
 app.use("/api", translationsRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -117,4 +116,5 @@ app.use("/admin", verifyRouter);
 app.use("/", imagesRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/ticket", ticketRouter);
+app.use("/api", usersRouter);
 module.exports = app;

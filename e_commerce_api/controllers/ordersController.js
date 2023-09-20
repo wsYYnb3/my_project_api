@@ -188,6 +188,7 @@ const OrdersController = {
   updateOrderStatus: async (req, res) => {
     try {
       const { data } = req.body;
+
       const order = await models.orders.findByPk(data.orderId);
       if (!order) {
         return res.status(404).json({ error: "Order not found" });

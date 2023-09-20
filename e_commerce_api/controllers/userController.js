@@ -56,7 +56,29 @@ const UserController = {
       res.status(500).json({ error: error.message });
     }
   },
-
+  getByClerkId: async (req, res) => {
+    try {
+      const customer = await models.customer.findOne({
+        where: { user_id: req.params.customerId },
+        include: [
+          {
+            model: models.address,
+            as: "billing_address",
+          },
+          { model: models.address, as: "shipping_address" },
+          { model: models.cartitem, as: "cartitems" },
+          { model: models.wishlistitem, as: "wishlistitems" },
+        ],
+      });
+      if (customer) {
+        res.status(200).json(customer);
+      } else {
+        res.status(404).json({ error: "Customer not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
   create: async (req, res) => {
     try {
       const customer = await models.customer.create(req.body);

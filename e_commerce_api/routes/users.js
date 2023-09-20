@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("../controllers/userController");
+const UserController = require("../controllers/userController");
 
+router.get("/customer/get_clerk/:customerId", UserController.getByClerkId);
 // Create new customer
 /*router.post("/customer", userController.createCustomer);
 router.get("/customer/list", userController.getCustomerList);
