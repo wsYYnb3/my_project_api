@@ -27,7 +27,6 @@ if (!process.env.CLERK_SECRET_KEY) {
   throw new Error("Missing Clerk Secret Key");
 }
 const session_secret = process.env.SESSION_SECRET;
-console.log(session_secret);
 var app = express();
 const clerk = new Clerk({
   apiKey: process.env.CLERK_SECRET_KEY,
