@@ -45,21 +45,21 @@ const WishListController = {
 
   addToWishList: async (req, res) => {
     try {
-      const { product_id, customer_id } = req.body;
+      const { productId, customerId } = req.body;
 
       const customer = await models.customer.findOne({
-        where: { user_id: customer_id },
+        where: { user_id: customerId },
       });
 
       if (!customer) {
         return res.status(404).json({ error: "Customer not found" });
       }
 
-      if (!product_id) {
+      if (!productId) {
         return res.status(400).json({ error: "Product ID is required" });
       }
 
-      const product = await models.product.findByPk(product_id);
+      const product = await models.product.findByPk(productId);
 
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
@@ -67,7 +67,7 @@ const WishListController = {
 
       const wishListItem = await models.wishlistitem.create({
         customer_id: customer.id,
-        product_id: product_id,
+        product_id: productId,
         DeletedAt: null,
       });
       const newWishListItemWithDetails = await models.cartitem.findOne({
@@ -91,9 +91,10 @@ const WishListController = {
 
   removeFromWishList: async (req, res) => {
     try {
-      const { product_id, customer_id } = req.body;
+      console.log("body", req.body);
+      const { productId, customerId } = req.body;
       const customer = await models.customer.findOne({
-        where: { user_id: customer_id },
+        where: { user_id: customerId },
       });
 
       if (!customer) {
@@ -101,7 +102,7 @@ const WishListController = {
       }
 
       const wishListItem = await models.wishlistitem.findOne({
-        where: { product_id: product_id, customer_id: customer.id },
+        where: { product_id: productId, customer_id: customer.id },
       });
 
       if (!wishListItem) {
