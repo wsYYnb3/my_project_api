@@ -6,11 +6,16 @@ const path = require("path");
 const initModels = require("../models/init-models");
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
-  host: "localhost",
-  port: 3308,
-  dialect: "mysql",
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USERNAME,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: 3306,
+    dialect: "mysql",
+  }
+);
 
 const models = initModels(sequelize);
 const storage = multer.diskStorage({
@@ -47,9 +52,14 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
 router.get("/images/:id", async (req, res) => {
   try {
+    console.log("PARAMS", req.params);
+
     const image = await models.image.findByPk(req.params.id);
+
+    console.log("image", image);
     if (image) {
-      res.sendFile(path.resolve(image.file_path));
+      console.log("CONSOLE LOG", image.file_path);
+      res.redirect(image.file_path);
     } else {
       res.status(404).send("Image not found");
     }
