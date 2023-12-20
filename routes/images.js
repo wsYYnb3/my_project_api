@@ -54,7 +54,7 @@ router.get("/images/:id", async (req, res) => {
   try {
     const image = await models.image.findByPk(req.params.id);
     if (image) {
-      res.sendFile(path.resolve(image.file_path));
+      res.redirect(image.file_path);
     } else {
       res.status(404).send("Image not found");
     }
