@@ -12,7 +12,7 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
-    port: 3308,
+    port: 3306,
     dialect: "mysql",
   }
 );
@@ -53,9 +53,9 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 router.get("/images/:id", async (req, res) => {
   try {
     const image = await models.image.findByPk(req.params.id);
+
     if (image) {
-      console.log(image.file_path);
-      res.redirect(image.file_path);
+      res.sendFile(path.resolve(image.file_path));
     } else {
       res.status(404).send("Image not found");
     }
