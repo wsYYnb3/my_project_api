@@ -4,3 +4,8 @@ env.local
 env.local
 e_commerce_api/.env
 e_commerce_api/node_modules
+env.local
+.env.local
+env.local
+.env
+node_modules
