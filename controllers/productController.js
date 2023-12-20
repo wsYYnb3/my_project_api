@@ -87,11 +87,24 @@ const ProductController = {
       if (!language) {
         return res.status(404).json({ error: "Language not found" });
       }
-
-      const queryTerms = query.split(" ").map((term) => `%${term}%`);
+      const queryTerms = query.split(" ").map((term) => `\\b${term}\\b`);
 
       const allConditions = await Promise.all(
         queryTerms.map(async (term) => {
+          const matchingCategories = await models.category.findAll({
+            attributes: ["id"],
+            include: [
+              {
+                model: models.translation,
+                as: "name_key_translation",
+                where: {
+                  language_id: language.id,
+                  translation_text: { [Op.regexp]: term },
+                },
+                attributes: [],
+              },
+            ],
+          });
           const matchingKeywords = await models.keyword.findAll({
             attributes: ["id"],
             include: [
@@ -100,7 +113,7 @@ const ProductController = {
                 as: "keyword_key_translation",
                 where: {
                   language_id: language.id,
-                  translation_text: { [Op.like]: term },
+                  translation_text: { [Op.regexp]: term },
                 },
                 attributes: [],
               },
@@ -108,21 +121,23 @@ const ProductController = {
           });
 
           const keywordIds = matchingKeywords.map((kw) => kw.id);
-
+          const categoryIds = matchingCategories.map((cat) => cat.id);
           return {
             [Op.or]: [
               Sequelize.where(
                 Sequelize.col("name_key_translation.translation_text"),
-                { [Op.like]: term }
+                { [Op.regexp]: term }
               ),
+
               Sequelize.where(
                 Sequelize.col("description_key_translation.translation_text"),
-                { [Op.like]: term }
+                { [Op.regexp]: term }
               ),
               Sequelize.where(
                 Sequelize.col("slug_key_translation.translation_text"),
-                { [Op.like]: term }
+                { [Op.regexp]: term }
               ),
+              { category_id: { [Op.in]: categoryIds } },
               { "$productkeywords.keyword_id$": { [Op.in]: keywordIds } },
             ],
           };
