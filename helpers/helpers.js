@@ -8,6 +8,9 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     port: 3306,
     dialect: "mysql",
+    dialectOptions: {
+      charset: "utf8mb4",
+    },
   }
 );
 function getProductAssociations(models) {
