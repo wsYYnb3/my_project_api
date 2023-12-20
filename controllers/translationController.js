@@ -1,10 +1,5 @@
-const Sequelize = require("sequelize");
 const initModels = require("../models/init-models");
-const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
-  host: "localhost",
-  port: 3308,
-  dialect: "mysql",
-});
+const { sequelize } = require("../helpers/helpers");
 const models = initModels(sequelize);
 const TranslationController = {
   getByLanguageCode: async (req, res) => {

@@ -1,13 +1,9 @@
 const initModels = require("../models/init-models");
-const Sequelize = require("sequelize");
+
 const { v4: uuidv4 } = require("uuid");
 const { getProductAssociations } = require("../helpers/helpers");
 const { getCustomerById } = require("../middlewares/customer/getCustomerById");
-const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
-  host: "localhost",
-  port: 3308,
-  dialect: "mysql",
-});
+const { sequelize } = require("../helpers/helpers");
 
 const models = initModels(sequelize);
 

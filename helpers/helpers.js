@@ -1,5 +1,15 @@
 const initModels = require("../models/init-models");
-
+const Sequelize = require("sequelize");
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USERNAME,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: 3306,
+    dialect: "mysql",
+  }
+);
 function getProductAssociations(models) {
   return [
     {
@@ -63,4 +73,4 @@ function getProductAssociations(models) {
   ];
 }
 
-module.exports = { getProductAssociations };
+module.exports = { getProductAssociations, sequelize };

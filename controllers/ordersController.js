@@ -1,15 +1,8 @@
 const initModels = require("../models/init-models");
-const Sequelize = require("sequelize");
+
 const { getProductAssociations } = require("../helpers/helpers");
-const CartController = require("./cartController");
-const sequelize = new Sequelize("EcommerceDB", "root", "asdf4321", {
-  host: "localhost",
-  port: 3308,
-  dialect: "mysql",
-});
+const { sequelize } = require("../helpers/helpers");
 const models = initModels(sequelize);
-const verifyAdminMW = require("../middlewares/admin/verifyAdminMW");
-const { Op } = require("sequelize");
 
 const OrdersController = {
   getAll: async (req, res) => {

@@ -38,14 +38,26 @@ app.use(bodyParser.json());
 app.use(bodyParser.raw({ type: "application/json" }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://incomparable-cendol-6eb2ac.netlify.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     optionsSuccessStatus: 204,
   })
 );
+
 app.use((req, res, next) => {
   req.clerk = clerk;
   next();
