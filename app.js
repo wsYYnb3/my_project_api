@@ -38,10 +38,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.raw({ type: "application/json" }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://incomparable-cendol-6eb2ac.netlify.app",
-];
+const allowedOrigins = ["http://localhost:3000", process.env.FRONTEND_URL];
 
 app.use(
   cors({
