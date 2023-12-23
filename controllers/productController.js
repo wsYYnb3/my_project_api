@@ -88,7 +88,11 @@ const ProductController = {
         return res.status(404).json({ error: "Language not found" });
       }
       const queryTerms = query.split(" ").map((term) => `\\b${term}\\b`);
-
+      if (queryTerms.length < 3) {
+        return res
+          .status(400)
+          .json({ error: "Minimum 3 characters length for search query" });
+      }
       const allConditions = await Promise.all(
         queryTerms.map(async (term) => {
           const matchingCategories = await models.category.findAll({
@@ -143,7 +147,7 @@ const ProductController = {
           };
         })
       );
-
+      console.log(allConditions);
       const products = await models.product.findAll({
         include: [
           ...getProductAssociations(models),
