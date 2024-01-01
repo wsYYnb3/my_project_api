@@ -52,13 +52,9 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
 router.get("/images/:id", async (req, res) => {
   try {
-    console.log("PARAMS", req.params);
-
     const image = await models.image.findByPk(req.params.id);
 
-    console.log("image", image);
     if (image) {
-      console.log("CONSOLE LOG", image.file_path);
       res.redirect(image.file_path);
     } else {
       res.status(404).send("Image not found");

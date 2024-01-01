@@ -7,7 +7,6 @@ const models = initModels(sequelize);
 const UserController = {
   getAll: async (req, res) => {
     try {
-      console.log("Getting all customers...");
       const customers = await models.customer.findAll({
         include: [
           {
@@ -20,7 +19,7 @@ const UserController = {
           { model: models.orders, as: "orders" },
         ],
       });
-      console.log("Customers found:", customers);
+
       res.status(200).json(customers);
     } catch (error) {
       console.error("Error in getAll:", error);
@@ -121,15 +120,12 @@ const UserController = {
         },
       });
       if (existingCustomer) {
-        console.log(`User ${id} already exists in the database.`);
       } else {
         await models.customer.create({
           user_id: id,
           email,
           type,
         });
-
-        console.log(`User ${id} was successfully stored.`);
       }
     } catch (error) {
       console.error("Error in storeWebhookUserData:", error);

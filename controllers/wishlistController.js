@@ -10,7 +10,6 @@ const WishListController = {
     try {
       const { customerId } = req.params;
       if (!customerId) {
-        console.log("empty");
         return;
       }
       const customer = await models.customer.findOne({
@@ -87,7 +86,6 @@ const WishListController = {
 
   removeFromWishList: async (req, res) => {
     try {
-      console.log("body", req.body);
       const { productId, customerId } = req.body;
       const customer = await models.customer.findOne({
         where: { user_id: customerId },
