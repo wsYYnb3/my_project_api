@@ -5,6 +5,8 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 const session = require("express-session");
+const RedisStore = require("connect-redis")(session);
+const redis = require("redis");
 const productsRouter = require("./routes/products");
 const addressRouter = require("./routes/address");
 var indexRouter = require("./routes/index");
@@ -100,15 +102,32 @@ app.post("/webhook", async function (req, res) {
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
+
+let redisClient = redis.createClient({
+  url: process.env.REDISCLOUD_URL,
+});
+
+redisClient.on("error", function (err) {
+  console.log("Could not establish a connection with Redis. " + err);
+});
+
+redisClient.on("connect", function () {
+  console.log("Connected to Redis successfully");
+});
+
 app.use(
   session({
+    store: new RedisStore({ client: redisClient }),
     secret: session_secret,
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true, httpOnly: true, maxAge: 60000 },
+    saveUninitialized: false,
+    cookie: {
+      secure: true,
+      httpOnly: true,
+      maxAge: 60000,
+    },
   })
 );
-
 app.use("/products", productsRouter);
 
 app.use("/categories", categoriesRouter);
