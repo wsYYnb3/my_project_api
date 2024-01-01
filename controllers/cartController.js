@@ -25,12 +25,18 @@ const CartController = {
       if (!customer) {
         if (!req.session.uuid) {
           req.session.uuid = uuidv4();
+          console.log(req.session.cookie);
+          console.log("uuid created:", req.session.uuid);
+          console.log(req.session.cookie);
         }
 
         customer = await models.customer.findOne({
           where: { user_id: req.session.uuid },
         });
         if (!customer) {
+          console.log(req.session.cookie);
+          console.log("uuid created:", req.session.uuid);
+          console.log(req.session.cookie);
           customer = await models.customer.create({
             user_id: req.session.uuid,
             type: "guest",
