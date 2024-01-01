@@ -128,19 +128,13 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,
+      domain: process.env.COOKIE_DOMAIN,
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       maxAge: 60000,
     },
-    cookie: {
-      domain: process.env.FRONTEND_URL,
-      httpOnly: process.env.NODE_ENV === "production" ? true : false,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 3 * 24 * 60 * 60 * 1000,
-    },
   })
 );
-console.log(process.env.NODE_ENV === "production");
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
 
