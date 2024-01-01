@@ -35,12 +35,13 @@ const CartController = {
         });
         if (!customer) {
           console.log(req.session.cookie);
-          console.log("uuid created:", req.session.uuid);
+
           console.log(req.session.cookie);
           customer = await models.customer.create({
             user_id: req.session.uuid,
             type: "guest",
           });
+          console.log("uuid created and guest:", req.session.uuid, customer);
         }
       }
 
