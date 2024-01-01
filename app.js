@@ -100,13 +100,13 @@ app.post("/webhook", async function (req, res) {
   }
 });
 
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/public", express.static(path.join(__dirname, "public")));
-
 let redisClient = redis.createClient({
   url: process.env.REDISCLOUD_URL,
 });
-
+redisClient.on("end", function () {
+  console.error("Redis client disconnected");
+  // Implement reconnection logic if necessary
+});
 redisClient.on("error", function (err) {
   console.log("Could not establish a connection with Redis. " + err);
 });
@@ -128,6 +128,9 @@ app.use(
     },
   })
 );
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/public", express.static(path.join(__dirname, "public")));
+
 app.use("/products", productsRouter);
 
 app.use("/categories", categoriesRouter);
