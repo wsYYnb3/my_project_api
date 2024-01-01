@@ -25,18 +25,15 @@ const CartController = {
       if (!customer) {
         if (!req.session.uuid) {
           req.session.uuid = uuidv4();
-          console.log(req.session.cookie);
+          await req.session.save();
+
           console.log("uuid created:", req.session.uuid);
-          console.log(req.session.cookie);
         }
 
         customer = await models.customer.findOne({
           where: { user_id: req.session.uuid },
         });
         if (!customer) {
-          console.log(req.session.cookie);
-
-          console.log(req.session.cookie);
           customer = await models.customer.create({
             user_id: req.session.uuid,
             type: "guest",
@@ -57,7 +54,6 @@ const CartController = {
         attributes: ["quantity"],
       });
 
-      console.log("Cart Items sent:", cartItems);
       res.status(200).json(cartItems);
     } catch (error) {
       console.error("Error in getAllByCustomerId:", error);

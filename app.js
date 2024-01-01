@@ -40,7 +40,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.raw({ type: "application/json" }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-const allowedOrigins = ["http://localhost:3000", process.env.FRONTEND_URL];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:8888",
+  process.env.FRONTEND_URL,
+];
 
 app.use(
   cors({
@@ -74,14 +78,12 @@ app.post("/webhook", async function (req, res) {
       console.error("Webhook secret is empty");
       return res.status(500).send("Internal Server Error");
     }
-    console.log(webhookSecret);
+
     const wh = new Webhook(webhookSecret);
     const evt = wh.verify(payload, headers);
     const id = evt.data.id;
     const eventType = evt.type;
     if (eventType === "user.created") {
-      console.log(`User ${id}  ${eventType}`);
-      console.log(evt.data.email_addresses[0].email_address);
       await userController.storeWebhookUserData(evt);
     }
     if (evt.data && evt.data.user_id) {
@@ -100,13 +102,14 @@ app.post("/webhook", async function (req, res) {
   }
 });
 
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/public", express.static(path.join(__dirname, "public")));
-
 let redisClient = redis.createClient({
   url: process.env.REDISCLOUD_URL,
 });
-
+redisClient.connect().catch(console.error);
+redisClient.on("end", function () {
+  console.error("Redis client disconnected");
+  // Implement reconnection logic if necessary
+});
 redisClient.on("error", function (err) {
   console.log("Could not establish a connection with Redis. " + err);
 });
@@ -114,10 +117,13 @@ redisClient.on("error", function (err) {
 redisClient.on("connect", function () {
   console.log("Connected to Redis successfully");
 });
+let redisStore = new RedisStore({
+  client: redisClient,
+});
 
 app.use(
   session({
-    store: new RedisStore({ client: redisClient }),
+    store: redisStore,
     secret: session_secret,
     resave: false,
     saveUninitialized: false,
@@ -128,6 +134,9 @@ app.use(
     },
   })
 );
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/public", express.static(path.join(__dirname, "public")));
+
 app.use("/products", productsRouter);
 
 app.use("/categories", categoriesRouter);

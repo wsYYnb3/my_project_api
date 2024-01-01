@@ -8,8 +8,7 @@ router.post("/webhook", express.json(), async function (req, res) {
   try {
     const payload = req.body;
     const headers = req.headers;
-    console.log("Payload:", payload);
-    console.log("Headers:", headers);
+
     const webhookSecret = process.env.CLERK_WEBHOOK_SECRET_KEY;
     if (!webhookSecret) {
       console.error(
@@ -25,7 +24,6 @@ router.post("/webhook", express.json(), async function (req, res) {
 
     const eventType = evt.type;
     if (eventType === "user.created") {
-      console.log(`User ${id} was ${eventType}`);
     }
 
     res.status(200).json({

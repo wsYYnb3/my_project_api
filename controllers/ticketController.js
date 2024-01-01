@@ -59,7 +59,7 @@ const TicketController = {
   sendTicket: async (req, res) => {
     try {
       const { name, email, message, customerId } = req.body;
-      console.log("BODY:", req.body);
+
       let customer;
       if (customerId) {
         customer = await models.customer.findOne({
@@ -78,6 +78,7 @@ const TicketController = {
       } else {
         if (!req.session.uuid) {
           req.session.uuid = uuidv4();
+          await req.session.save();
         }
 
         customer = await models.customer.findOne({

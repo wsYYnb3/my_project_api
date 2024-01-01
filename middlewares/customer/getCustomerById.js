@@ -3,7 +3,6 @@ async function getCustomerId(req, res, next) {
 
   try {
     if (!customerId) {
-      console.log("empty");
       return res.status(400).json({ error: "Customer ID is required" });
     }
 

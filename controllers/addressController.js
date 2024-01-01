@@ -10,8 +10,7 @@ const AddressController = {
     try {
       const { customerId } = req.params;
       if (!customerId) {
-        console.log("empty");
-        return;
+        return res.status(400).json({ error: "Customer ID required" });
       }
       const customer = await models.customer.findOne({
         where: { user_id: customerId },
@@ -46,8 +45,7 @@ const AddressController = {
     try {
       const { customerId } = req.params;
       if (!customerId) {
-        console.log("empty");
-        return;
+        return res.status(400).json({ error: "Customer ID required" });
       }
       const customer = await models.customer.findOne({
         where: { user_id: customerId },
@@ -78,8 +76,7 @@ const AddressController = {
     try {
       const { customerId } = req.params;
       if (!customerId) {
-        console.log("empty");
-        return;
+        return res.status(400).json({ error: "Customer ID required" });
       }
       const customer = await models.customer.findOne({
         where: { user_id: customerId },
