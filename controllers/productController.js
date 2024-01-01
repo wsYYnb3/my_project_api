@@ -148,7 +148,7 @@ const ProductController = {
           };
         })
       );
-      console.log(allConditions);
+
       const products = await models.product.findAll({
         include: [
           ...getProductAssociations(models),

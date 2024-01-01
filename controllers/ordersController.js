@@ -114,7 +114,7 @@ const OrdersController = {
           },
         });
       };
-      console.log(billingDetails);
+
       let billingAddress = await findAddress(billingDetails);
       if (!billingAddress) {
         billingAddress = await models.address.create({

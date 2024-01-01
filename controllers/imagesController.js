@@ -10,7 +10,6 @@ const upload = multer({ dest: "uploads/" });
 class ImagesController {
   static async upload(req, res) {
     try {
-      console.log(req.file);
       const {
         originalname: file_name,
         mimetype: file_type,
