@@ -105,7 +105,7 @@ app.use(
     secret: session_secret,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false, httpOnly: true, maxAge: 60000 },
+    cookie: { secure: true, httpOnly: true, maxAge: 60000 },
   })
 );
 
