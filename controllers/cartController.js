@@ -11,6 +11,8 @@ const CartController = {
   getAllByCustomerId: async (req, res) => {
     try {
       let customerId;
+      console.log("req.params", req.params.customerId);
+      console.log("req.body", req.body.customerId);
       if (req.params && req.params.customerId) {
         customerId = req.params.customerId;
       } else if (req.body && req.body.customerId) {
