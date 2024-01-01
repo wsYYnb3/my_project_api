@@ -11,7 +11,8 @@ const CartController = {
   getAllByCustomerId: async (req, res) => {
     try {
       let customerId;
-
+      console.log("cookie", req.session);
+      console.log(console.log(session), req.cookie);
       if (req.params && req.params.customerId) {
         customerId = req.params.customerId;
       } else if (req.body && req.body.customerId) {
@@ -38,7 +39,7 @@ const CartController = {
             user_id: req.session.uuid,
             type: "guest",
           });
-          console.log("uuid created and guest:", req.session.uuid, customer);
+          console.log("uuid created and guest:", req.session, req.cookie);
         }
       }
 
@@ -77,6 +78,7 @@ const CartController = {
       } else {
         if (!req.session.uuid) {
           req.session.uuid = uuidv4();
+          await req.session.save();
         }
 
         customer = await models.customer.findOne({
