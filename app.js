@@ -43,6 +43,8 @@ app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:8888",
+  "http://localhost:5000/",
+  process.env.BACKEND_URL,
   process.env.FRONTEND_URL,
 ];
 app.set("trust proxy", 1);
@@ -52,6 +54,7 @@ app.use(
       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
+        console.log(origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -135,9 +138,10 @@ app.use(
     },
   })
 );
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
-
+app.use("/api", cartRoutes);
 app.use("/products", productsRouter);
 
 app.use("/categories", categoriesRouter);
@@ -149,7 +153,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/address", addressRouter);
 app.use("/api", searchRouter);
 app.use("/orders", ordersRoutes);
-app.use("/api", cartRoutes);
+
 app.use("/wishlist", wishlistRoutes);
 app.use("/admin", verifyRouter);
 app.use("/", imagesRouter);
