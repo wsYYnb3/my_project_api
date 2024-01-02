@@ -57,7 +57,7 @@ const CartController = {
         ],
         attributes: ["quantity"],
       });
-
+      console.log(cartItems);
       res.status(200).json(cartItems);
     } catch (error) {
       console.error("Error in getAllByCustomerId:", error);
