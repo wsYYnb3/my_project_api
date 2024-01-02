@@ -6,38 +6,44 @@ const { getCustomerById } = require("../middlewares/customer/getCustomerById");
 const { sequelize } = require("../helpers/helpers");
 
 const models = initModels(sequelize);
+async function getOrCreateCustomer(customerId, session) {
+  if (!customerId) {
+    if (!session.uuid) {
+      session.uuid = uuidv4();
+      await session.save();
+    }
+    customerId = session.uuid;
+  }
+
+  let customer = await models.customer.findOne({
+    where: { user_id: customerId },
+  });
+
+  if (!customer) {
+    customer = await models.customer.create({
+      user_id: customerId,
+      type: customerId === session.uuid ? "guest" : "registered",
+    });
+  }
+
+  return customer;
+}
 
 const CartController = {
   getAllByCustomerId: async (req, res) => {
     try {
-      let customerId;
+      let customerId = req.params.customerId || req.body.customerId;
 
-      if (req.params && req.params.customerId) {
-        customerId = req.params.customerId;
-      } else if (req.body && req.body.customerId) {
-        customerId = req.body.customerId;
-      }
-      let customer;
-      customer = await models.customer.findOne({
+      let customer = await models.customer.findOne({
         where: { user_id: customerId },
       });
 
       if (!customer) {
-        if (!req.session.uuid) {
-          req.session.uuid = uuidv4();
-          await req.session.save();
-        }
-
-        customer = await models.customer.findOne({
-          where: { user_id: req.session.uuid },
+        // Create a new customer with the given customerId if not found
+        customer = await models.customer.create({
+          user_id: customerId,
+          type: "guest",
         });
-        if (!customer) {
-          customer = await models.customer.create({
-            user_id: req.session.uuid,
-            type: "guest",
-          });
-          console.log("uuid created and guest:", req.session, req.cookie);
-        }
       }
 
       const cartItems = await models.cartitem.findAll({
@@ -51,7 +57,7 @@ const CartController = {
         ],
         attributes: ["quantity"],
       });
-
+      console.log(cartItems);
       res.status(200).json(cartItems);
     } catch (error) {
       console.error("Error in getAllByCustomerId:", error);
@@ -62,32 +68,17 @@ const CartController = {
   addToCart: async (req, res) => {
     try {
       const { productId, quantity, customerId } = req.body;
+      console.log(req.body);
+      let customer = await models.customer.findOne({
+        where: { user_id: customerId },
+      });
 
-      let customer;
-      if (customerId) {
-        customer = await models.customer.findOne({
-          where: { user_id: customerId },
+      if (!customer) {
+        // Create a new customer with the given customerId if not found
+        customer = await models.customer.create({
+          user_id: customerId,
+          type: "guest",
         });
-
-        if (!customer) {
-          return res.status(404).json({ error: "Customer not found" });
-        }
-      } else {
-        if (!req.session.uuid) {
-          req.session.uuid = uuidv4();
-          await req.session.save();
-        }
-
-        customer = await models.customer.findOne({
-          where: { user_id: req.session.uuid },
-        });
-
-        if (!customer) {
-          customer = await models.customer.create({
-            user_id: req.session.uuid,
-            type: "guest",
-          });
-        }
       }
 
       if (!productId || !quantity) {
