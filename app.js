@@ -160,4 +160,5 @@ app.use("/", imagesRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api", ticketRouter);
 app.use("/api", usersRouter);
+app.use("/", verifyRouter);
 module.exports = app;
