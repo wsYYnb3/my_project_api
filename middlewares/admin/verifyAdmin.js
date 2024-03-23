@@ -5,8 +5,8 @@ const models = initModels(sequelize);
 
 async function verifyAdmin(req, res, next) {
   try {
+    console.log(req.params);
     const { id } = req.params;
-
     const admin = await models.admin.findOne({ where: { id: id } });
     const user = await models.customer.findOne({ where: { user_id: id } });
     if (admin) {
