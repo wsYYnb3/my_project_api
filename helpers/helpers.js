@@ -11,7 +11,7 @@ const sequelize = new Sequelize(
     dialectOptions: {
       charset: "utf8mb4",
     },
-    logging: false,
+    logging: console.log,
   }
 );
 function getProductAssociations(models) {

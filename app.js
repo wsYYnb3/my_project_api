@@ -104,7 +104,7 @@ app.post("/webhook", async function (req, res) {
     });
   }
 });
-
+/*
 let redisClient = redis.createClient({
   url: process.env.REDISCLOUD_URL,
 });
@@ -123,16 +123,16 @@ redisClient.on("connect", function () {
 let redisStore = new RedisStore({
   client: redisClient,
 });
-
+*/
 app.use(
   session({
-    store: redisStore,
+    // store:redisClient,
     secret: session_secret,
     resave: false,
     saveUninitialized: false,
     cookie: {
       domain: process.env.COOKIE_DOMAIN,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       httpOnly: true,
       maxAge: 60000,
     },
